@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # Servidor de Node.js
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=sqlserver://db:1433;database=MarketDB;user=sa;password=Password_Fuerte_123;encrypt=true;trustServerCertificate=true;
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Base de Datos SQL Server
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password_Fuerte_123
+      - MSSQL_PID=Developer
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Password_Fuerte_123", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
