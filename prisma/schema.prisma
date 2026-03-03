@@ -1,11 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
-
-// Configuración del generador y la base de datos
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,39 +7,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// 1. Entidad Producto
-// 1. Entidad Producto
 model Producto {
   cod_prod       Int            @id @default(autoincrement())
-  descripcion    String
-  precio_libra   Float
-  fecha_registro DateTime @default(now())
+  descripcion    String         @db.NVarChar(255)
+  precio_libra   Decimal        @db.Decimal(10,2)
+  fecha_registro DateTime       @default(now())
   fecha_cosecha  DateTime?
+
   detalles       DetalleVenta[]
 }
 
-// 2. Entidad Venta (Cabecera)
 model Venta {
   id_venta      Int            @id @default(autoincrement())
-  documento     String
+  documento     String         @db.NVarChar(100)
   fecha_venta   DateTime       @default(now())
-  total_general Float          @default(0)
+  total_general Decimal        @default(0) @db.Decimal(12,2)
+
   detalles      DetalleVenta[]
 }
 
-// 3. Entidad DetalleVenta
 model DetalleVenta {
   id_detalle_venta Int      @id @default(autoincrement())
-  cantidad         Float
-  precio_libra     Float
-  subtotal         Float
+  cantidad         Decimal  @db.Decimal(10,2)
+  precio_libra     Decimal  @db.Decimal(10,2)
+  subtotal         Decimal  @db.Decimal(12,2)
   fecha_registro   DateTime @default(now())
   fecha_cosecha    DateTime?
 
-  // Relaciones: usa nombres consistentes y en minúsculas
   venta            Venta    @relation(fields: [venta_id], references: [id_venta], onDelete: Cascade)
   venta_id         Int
 
-  producto         Producto @relation(fields: [productoId], references: [cod_prod], onDelete: Cascade)
-  productoId       Int
+  producto         Producto @relation(fields: [producto_id], references: [cod_prod], onDelete: Cascade)
+  producto_id      Int
+
+  @@index([venta_id])
+  @@index([producto_id])
 }

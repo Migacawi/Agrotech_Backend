@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,12 +21,12 @@
   },
   "homepage": "https://github.com/Migacawi/Agrotech_Backend#readme",
   "dependencies": {
-    "@prisma/client": "^7.4.2",
+    "@prisma/client": "^6.19.2",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "nodemon": "^3.1.14"
   },
   "devDependencies": {
-    "prisma": "^7.4.2"
+    "prisma": "^6.19.2"
   }
 }

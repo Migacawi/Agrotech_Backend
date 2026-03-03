@@ -21,4 +21,4 @@ RUN npx prisma generate
 EXPOSE 3000
 
 # 8. Comando para arrancar la app
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
