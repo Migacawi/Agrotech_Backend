@@ -2,10 +2,10 @@
   "name": "agrotech_backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,6 +22,7 @@
   "homepage": "https://github.com/Migacawi/Agrotech_Backend#readme",
   "dependencies": {
     "@prisma/client": "^6.19.2",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "nodemon": "^3.1.14"
