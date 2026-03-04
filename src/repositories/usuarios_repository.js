@@ -1,28 +1,34 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const getAllUsuarios = async () => prisma.usuarios.findMany({
-    include: { Roles: true, Pedidos: true, Productos: true }
+const listUsuarios = () => prisma.usuarios.findMany({
+  include: { Roles: true, Pedidos: true, Productos: true }
 });
 
-const getUsuarioById = async (id) => prisma.usuarios.findUnique({
-    where: { Id: id },
-    include: { Roles: true, Pedidos: true, Productos: true }
+const getUsuario = (id) => prisma.usuarios.findUnique({
+  where: { id: id },
+  include: { Roles: true, Pedidos: true, Productos: true }
 });
 
-const createUsuario = async (data) => prisma.usuarios.create({ data });
-
-const updateUsuario = async (id, data) => prisma.usuarios.update({
-    where: { Id: id },
-    data
+const createUsuario = (data) => prisma.usuarios.create({
+  data: data,
+  include: { Roles: true, Pedidos: true, Productos: true }
 });
 
-const deleteUsuario = async (id) => prisma.usuarios.delete({ where: { Id: id } });
+const editUsuario = (id, data) => prisma.usuarios.update({
+  where: { id: id },
+  data: data,
+  include: { Roles: true, Pedidos: true, Productos: true }
+});
+
+const removeUsuario = (id) => prisma.usuarios.delete({
+  where: { id: id }
+});
 
 module.exports = {
-    getAllUsuarios,
-    getUsuarioById,
-    createUsuario,
-    updateUsuario,
-    deleteUsuario
+  listUsuarios,
+  getUsuario,
+  createUsuario,
+  editUsuario,
+  removeUsuario
 };
