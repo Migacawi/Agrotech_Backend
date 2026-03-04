@@ -1,38 +1,15 @@
-const usuariosRepository = require('../repositories/usuarios_repository');
-const bcrypt = require('bcrypt');
+const usuariosRepo = require('../repositories/usuarios_repository');
 
-class UsuariosService {
+const listUsuarios = async () => await usuariosRepo.getAllUsuarios();
+const getUsuario = async (id) => await usuariosRepo.getUsuarioById(id);
+const addUsuario = async (data) => await usuariosRepo.createUsuario(data);
+const editUsuario = async (id, data) => await usuariosRepo.updateUsuario(id, data);
+const removeUsuario = async (id) => await usuariosRepo.deleteUsuario(id);
 
-  async getAll() {
-    return await usuariosRepository.findAll();
-  }
-
-  async getById(id) {
-    const user = await usuariosRepository.findById(id);
-    if (!user) throw new Error('Usuario no encontrado');
-    return user;
-  }
-
-  async create(data) {
-
-    const exists = await usuariosRepository.findByEmail(data.Email);
-    if (exists) throw new Error('El email ya existe');
-
-    const hashedPassword = await bcrypt.hash(data.PasswordHash, 10);
-
-    return await usuariosRepository.create({
-      ...data,
-      PasswordHash: hashedPassword
-    });
-  }
-
-  async update(id, data) {
-    return await usuariosRepository.update(id, data);
-  }
-
-  async delete(id) {
-    return await usuariosRepository.delete(id);
-  }
-}
-
-module.exports = new UsuariosService();
+module.exports = {
+    listUsuarios,
+    getUsuario,
+    addUsuario,
+    editUsuario,
+    removeUsuario
+};

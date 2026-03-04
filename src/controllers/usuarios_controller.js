@@ -1,54 +1,54 @@
 const usuariosService = require('../services/usuarios_service');
 
-class UsuariosController {
-
-  async getAll(req, res, next) {
+const getUsuarios = async (req, res) => {
     try {
-      const users = await usuariosService.getAll();
-      res.json(users);
-    } catch (error) {
-      next(error);
+        const usuarios = await usuariosService.listUsuarios();
+        res.json(usuarios);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-  }
+};
 
-  async getById(req, res, next) {
+const getUsuarioById = async (req, res) => {
     try {
-      const user = await usuariosService.getById(parseInt(req.params.id));
-      res.json(user);
-    } catch (error) {
-      next(error);
+        const usuario = await usuariosService.getUsuario(parseInt(req.params.id));
+        res.json(usuario);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-  }
+};
 
-  async create(req, res, next) {
+const createUsuario = async (req, res) => {
     try {
-      const user = await usuariosService.create(req.body);
-      res.status(201).json(user);
-    } catch (error) {
-      next(error);
+        const usuario = await usuariosService.addUsuario(req.body);
+        res.status(201).json(usuario);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-  }
+};
 
-  async update(req, res, next) {
+const updateUsuario = async (req, res) => {
     try {
-      const user = await usuariosService.update(
-        parseInt(req.params.id),
-        req.body
-      );
-      res.json(user);
-    } catch (error) {
-      next(error);
+        const usuario = await usuariosService.editUsuario(parseInt(req.params.id), req.body);
+        res.json(usuario);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-  }
+};
 
-  async delete(req, res, next) {
+const deleteUsuario = async (req, res) => {
     try {
-      await usuariosService.delete(parseInt(req.params.id));
-      res.json({ message: 'Usuario eliminado' });
-    } catch (error) {
-      next(error);
+        await usuariosService.removeUsuario(parseInt(req.params.id));
+        res.status(204).send();
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-  }
-}
+};
 
-module.exports = new UsuariosController();
+module.exports = {
+    getUsuarios,
+    getUsuarioById,
+    createUsuario,
+    updateUsuario,
+    deleteUsuario
+};
