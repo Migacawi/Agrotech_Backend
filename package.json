@@ -1,31 +1,14 @@
 {
   "name": "agrotech_backend",
   "version": "1.0.0",
-  "description": "",
   "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prisma:generate": "npx prisma generate"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Migacawi/Agrotech_Backend.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/Migacawi/Agrotech_Backend/issues"
-  },
-  "homepage": "https://github.com/Migacawi/Agrotech_Backend#readme",
   "dependencies": {
     "@prisma/client": "^6.19.2",
-    "bcrypt": "^6.0.0",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "nodemon": "^3.1.14"
+    "express": "^4.18.2"
   },
   "devDependencies": {
     "prisma": "^6.19.2"

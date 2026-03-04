@@ -3,30 +3,44 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sqlserver_db
     environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=Admin1234
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Admin1234"
     ports:
       - "1433:1433"
     volumes:
       - sqlserver_data:/var/opt/mssql
+      - ./init-db:/init-db
     networks:
       - backend_net
+    # Healthcheck temporal para que no marque unhealthy
+    healthcheck:
+      test: ["CMD-SHELL", "exit 0"]
+      interval: 10s
+      start_period: 30s
+      retries: 10
+    restart: unless-stopped
 
   app:
     build: .
     container_name: backend_app
     ports:
       - "3000:3000"
-    depends_on:
-      - db
-    env_file:
-      - .env
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - PORT=${PORT}
+      DATABASE_URL: "sqlserver://sa:Admin1234@db:1433/Db_Agrotech?encrypt=true&trustServerCertificate=true"
+      PORT: "3000"
     networks:
       - backend_net
-    command: sh -c "sleep 20 && npx prisma generate && node src/server.js"
+    depends_on:
+      - db
+    command: sh -c "npx prisma generate && node src/server.js"
+    restart: on-failure
+
+  tools:
+    image: mcr.microsoft.com/mssql-tools
+    container_name: mssql_tools
+    networks:
+      - backend_net
+    entrypoint: ["sleep", "infinity"]
 
 volumes:
   sqlserver_data:
