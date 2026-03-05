@@ -1,9 +1,7 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const listUsuarios = () => prisma.usuarios.findMany({
-  include: { Roles: true, Pedidos: true, Productos: true }
-});
+const listUsuarios = () => prisma.usuarios.findMany();
 
 const getUsuario = (id) => prisma.usuarios.findUnique({
   where: { id: id },
