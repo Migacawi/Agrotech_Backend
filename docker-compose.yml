@@ -28,11 +28,15 @@ services:
     environment:
       DATABASE_URL: "sqlserver://db:1433;initial catalog=Db_Agrotech;user=sa;password=Admin1234;encrypt=true;trustServerCertificate=true"
       PORT: "3000"
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     networks:
       - backend_net
     depends_on:
       - db
-    command: sh -c "npx prisma generate && node src/server.js"
+    command: sh -c "npx prisma generate && npm run dev"
     restart: on-failure
 
   tools:
