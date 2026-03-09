@@ -1,5 +1,6 @@
 const express = require('express');
-const app = express(); // <-- esto faltaba
+const cors = require('cors');
+const app = express();
 const errorHandler = require('./middlewares/errorHandler');
 
 // Importar tus rutas
@@ -10,6 +11,14 @@ const detallePedidoRoutes = require('./routes/detallePedido_routes');
 const pagosRoutes = require('./routes/pagos_routes');
 const rolesRoutes = require('./routes/roles_routes');
 const imagenesProductoRoutes = require('./routes/imagenesProducto_routes');
+
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://congenial-telegram-pjq5gpjj6j75h94v5-5173.app.github.dev'
+  ],
+  credentials: true
+}));
 
 // Middleware para parsear JSON
 app.use(express.json());
