@@ -1,5 +1,6 @@
 const usuariosService = require('../services/usuarios_service');
 const { validateCreateUsuario, validateUpdateUsuario } = require('../validators/usuarios_validator');
+const jwt = require('jsonwebtoken');
 
 function mapErrorToResponse(err) {
     if (err.code === 'P2002') {
@@ -41,7 +42,9 @@ const createUsuario = async (req, res) => {
             const messages = result.error.issues.map((e) => e.message).join('. ');
             return res.status(400).json({ error: 'Datos inválidos', detalles: messages });
         }
+
         const usuario = await usuariosService.addUsuario(result.data);
+
         res.status(201).json(usuario);
     } catch (err) {
         const { status, message } = mapErrorToResponse(err);
@@ -56,7 +59,9 @@ const updateUsuario = async (req, res) => {
             const messages = result.error.issues.map((e) => e.message).join('. ');
             return res.status(400).json({ error: 'Datos inválidos', detalles: messages });
         }
+
         const usuario = await usuariosService.editUsuario(parseInt(req.params.id), result.data);
+
         res.json(usuario);
     } catch (err) {
         const { status, message } = mapErrorToResponse(err);
@@ -74,10 +79,52 @@ const deleteUsuario = async (req, res) => {
     }
 };
 
+/* LOGIN DE USUARIO */
+const loginUsuario = async (req, res) => {
+    try {
+
+        const { email, password } = req.body;
+
+        const usuario = await usuariosService.getUsuarioByEmail(email);
+
+        if (!usuario) {
+            return res.status(401).json({
+                error: "Usuario no encontrado"
+            });
+        }
+
+        if (usuario.passwordHash !== password) {
+            return res.status(401).json({
+                error: "Contraseña incorrecta"
+            });
+        }
+
+        const token = jwt.sign(
+            {
+                id: usuario.id,
+                email: usuario.email,
+                rol: usuario.rol_id
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "8h" }
+        );
+
+        res.json({
+            message: "Login exitoso",
+            token
+        });
+
+    } catch (err) {
+        const { status, message } = mapErrorToResponse(err);
+        res.status(status).json({ error: message });
+    }
+};
+
 module.exports = {
     getUsuarios,
     getUsuarioById,
     createUsuario,
     updateUsuario,
-    deleteUsuario
+    deleteUsuario,
+    loginUsuario
 };

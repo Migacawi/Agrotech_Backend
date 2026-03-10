@@ -13,15 +13,18 @@ const getUsuario = (id) => prisma.usuarios.findUnique({
 const createUsuario = (data) => {
   const rolId = data.RolId ?? data.rolId;
   const rolNombre = data.RolNombre ?? data.rolNombre;
+
   const rolConnect =
     rolNombre != null && String(rolNombre).trim() !== ''
       ? { connect: { Nombre: rolNombre } }
       : rolId != null
         ? { connect: { Id: Number(rolId) } }
         : null;
+
   if (!rolConnect) {
     throw new Error('Debes indicar RolId o RolNombre para el rol del usuario.');
   }
+
   return prisma.usuarios.create({
     data: {
       Nombre: data.Nombre,
@@ -35,17 +38,21 @@ const createUsuario = (data) => {
 
 const editUsuario = (id, data) => {
   const updateData = { ...data };
+
   const rolId = data.RolId ?? data.rolId;
   const rolNombre = data.RolNombre ?? data.rolNombre;
+
   delete updateData.RolNombre;
   delete updateData.rolNombre;
   delete updateData.RolId;
   delete updateData.rolId;
+
   if (rolNombre != null && String(rolNombre).trim() !== '') {
     updateData.Rol = { connect: { Nombre: rolNombre } };
   } else if (rolId != null) {
     updateData.RolId = Number(rolId);
   }
+
   return prisma.usuarios.update({
     where: { Id: id },
     data: updateData,
@@ -57,10 +64,17 @@ const removeUsuario = (id) => prisma.usuarios.delete({
   where: { Id: id }
 });
 
+// 🔐 FUNCIÓN PARA LOGIN
+const getUsuarioByEmail = (email) => prisma.usuarios.findUnique({
+  where: { Email: email },
+  include: { Rol: true }
+});
+
 module.exports = {
   listUsuarios,
   getUsuario,
   createUsuario,
   editUsuario,
-  removeUsuario
+  removeUsuario,
+  getUsuarioByEmail
 };
