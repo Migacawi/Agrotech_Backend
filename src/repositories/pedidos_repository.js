@@ -1,17 +1,43 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const getAllPedidos = async () => prisma.pedidos.findMany({
-    include: { Usuarios: true, DetallePedido: true, Pagos: true }
-});
+const getAllProductos = async () =>
+  prisma.productos.findMany({
+    include: {
+      Usuario: true,
+      Detalles: true,
+      Imagenes: true
+    }
+  });
 
-const getPedidoById = async (id) => prisma.pedidos.findUnique({
-    where: { Id: id },
-    include: { Usuarios: true, DetallePedido: true, Pagos: true }
-});
+const getProductoById = async (id) =>
+  prisma.productos.findUnique({
+    where: { Id: parseInt(id) }, // Conversión segura
+    include: {
+      Usuario: true,
+      Detalles: true,
+      Imagenes: true
+    }
+  });
 
-const createPedido = async (data) => prisma.pedidos.create({ data });
-const updatePedido = async (id, data) => prisma.pedidos.update({ where: { Id: id }, data });
-const deletePedido = async (id) => prisma.pedidos.delete({ where: { Id: id } });
+const createProducto = async (data) =>
+  prisma.productos.create({ data });
 
-module.exports = { getAllPedidos, getPedidoById, createPedido, updatePedido, deletePedido };
+const updateProducto = async (id, data) =>
+  prisma.productos.update({
+    where: { Id: parseInt(id) },
+    data
+  });
+
+const deleteProducto = async (id) =>
+  prisma.productos.delete({
+    where: { Id: parseInt(id) }
+  });
+
+module.exports = {
+  getAllProductos,
+  getProductoById,
+  createProducto,
+  updateProducto,
+  deleteProducto
+};

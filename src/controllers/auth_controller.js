@@ -2,35 +2,52 @@ const jwt = require("jsonwebtoken");
 const prisma = require("../prisma/client");
 
 const login = async (req, res) => {
+  try {
 
-  const { email, password } = req.body;
+    console.log("BODY:", req.body);
 
-  const user = await prisma.usuarios.findUnique({
-    where: { email }
-  });
+    const { email, password } = req.body;
 
-  if (!user) {
-    return res.status(401).json({
-      message: "Usuario no encontrado"
-    });
-  }
-
-  const token = jwt.sign(
-    {
-      id: user.id,
-      email: user.email,
-      rol: user.rol_id
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: "8h"
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email y password son requeridos"
+      });
     }
-  );
 
-  res.json({
-    token
-  });
+    const user = await prisma.usuarios.findUnique({
+      where: { Email: email }   // 👈 importante si tu modelo usa Email
+    });
 
+    if (!user) {
+      return res.status(401).json({
+        message: "Usuario no encontrado"
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user.Id,
+        email: user.Email,
+        rol: user.RolId
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "8h"
+      }
+    );
+
+    res.json({ token });
+
+  } catch (error) {
+
+    console.error("ERROR LOGIN:", error);
+
+    res.status(500).json({
+      message: "Error en login",
+      error: error.message
+    });
+
+  }
 };
 
 module.exports = {
