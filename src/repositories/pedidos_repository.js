@@ -12,7 +12,7 @@ const getAllProductos = async () =>
 
 const getProductoById = async (id) =>
   prisma.productos.findUnique({
-    where: { Id: parseInt(id) }, // Conversión segura
+    where: { Id: parseInt(id) },
     include: {
       Usuario: true,
       Detalles: true,
@@ -20,8 +20,7 @@ const getProductoById = async (id) =>
     }
   });
 
-const createProducto = async (data) =>
-  prisma.productos.create({ data });
+const createProducto = async (data) => prisma.productos.create({ data });
 
 const updateProducto = async (id, data) =>
   prisma.productos.update({
