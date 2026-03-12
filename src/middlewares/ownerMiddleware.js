@@ -5,7 +5,7 @@ const ownerMiddleware = async (req, res, next) => {
   const productoId = Number(req.params.id);
 
   const producto = await prisma.productos.findUnique({
-    where: { id: productoId }
+    where: { Id: productoId } // ← cambiar id por Id
   });
 
   if (!producto) {
@@ -14,14 +14,13 @@ const ownerMiddleware = async (req, res, next) => {
     });
   }
 
-  if (producto.usuario_id !== req.user.id) {
+  if (producto.VendedorId !== req.user.id) { 
     return res.status(403).json({
       message: "No eres el dueño de este producto"
     });
   }
 
   next();
-
 };
 
 module.exports = ownerMiddleware;
