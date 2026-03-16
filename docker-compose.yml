@@ -30,6 +30,11 @@ services:
       PORT: "3000"
       JWT_SECRET: "agrotech_secret_key"
       CHOKIDAR_USEPOLLING: "true"
+      environment:
+      CLOUDINARY_CLOUD_NAME: "tu_cloud_name"
+      CLOUDINARY_API_KEY: "tu_api_key"
+      CLOUDINARY_API_SECRET: "tu_api_secret"
+  # ... las que ya tienes
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
