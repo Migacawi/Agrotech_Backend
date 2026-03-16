@@ -20,7 +20,11 @@ const getProductoById = async (req, res) => {
 
 const createProducto = async (req, res) => {
     try {
-        const producto = await productosService.addProducto(req.body);
+        const data = {
+            ...req.body,
+            VendedorId: req.user.id
+        };
+        const producto = await productosService.addProducto(data);
         res.status(201).json(producto);
     } catch (err) {
         res.status(500).json({ error: err.message });

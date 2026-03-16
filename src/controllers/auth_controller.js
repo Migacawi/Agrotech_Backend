@@ -15,7 +15,8 @@ const login = async (req, res) => {
     }
 
     const user = await prisma.usuarios.findUnique({
-      where: { Email: email }   // 👈 importante si tu modelo usa Email
+      where: { Email: email },
+      include: { Rol: true }
     });
 
     if (!user) {
@@ -28,7 +29,7 @@ const login = async (req, res) => {
       {
         id: user.Id,
         email: user.Email,
-        rol: user.RolId
+        rol: user.Rol.Nombre
       },
       process.env.JWT_SECRET,
       {

@@ -24,11 +24,12 @@ app.use(cors({
   credentials: true
 }));
 
-// Middleware para JSON
-app.use(express.json());
+// Middleware para JSON con límite aumentado
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Rutas de la API
-app.use('/api/auth', authRoutes); // 🔐 Ruta para login
+app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/pedidos', pedidosRoutes);
