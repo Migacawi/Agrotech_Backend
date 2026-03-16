@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { upload } = require('../middlewares/upload.middleware'); // ← aquí el cambio
+const { upload } = require('../middlewares/uploadMiddleware');
 const authMiddleware = require('../middlewares/authMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
 const ownerMiddleware = require('../middlewares/ownerMiddleware');
@@ -8,7 +8,7 @@ const {
   eliminarImagen,
   marcarComoPrincipal,
   obtenerImagenesProducto
-} = require('../controllers/imagenesProducto_controller');
+} = require('../controllers/imagenesproducto_controller');
 
 router.get('/producto/:productoId', obtenerImagenesProducto);
 
