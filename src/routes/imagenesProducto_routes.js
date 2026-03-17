@@ -15,7 +15,7 @@ router.get('/producto/:productoId', obtenerImagenesProducto);
 router.post(
   '/:productoId/subir',
   authMiddleware,
-  roleMiddleware('vendedor'),
+  roleMiddleware(['admin', 'vendedor']),
   (req, res, next) => {
     req.params.id = req.params.productoId;
     next();
@@ -25,7 +25,7 @@ router.post(
   subirImagenes
 );
 
-router.delete('/:id', authMiddleware, roleMiddleware('vendedor'), eliminarImagen);
-router.put('/:id/principal', authMiddleware, roleMiddleware('vendedor'), marcarComoPrincipal);
+router.delete('/:id', authMiddleware, roleMiddleware(['admin', 'vendedor']), eliminarImagen);
+router.put('/:id/principal', authMiddleware, roleMiddleware(['admin', 'vendedor']), marcarComoPrincipal);
 
 module.exports = router;

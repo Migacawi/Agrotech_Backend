@@ -19,7 +19,7 @@ const imagenesProductoRoutes = require('./routes/imagenesProducto_routes');
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://congenial-telegram-pjq5gpjj6j75h94v5-5173.app.github.dev'
+    'https://improved-space-doodle-r4v5r6vq6rr4f5wv-5173.app.github.dev'
   ],
   credentials: true
 }));
