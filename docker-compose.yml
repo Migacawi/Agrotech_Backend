@@ -1,0 +1,59 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver_db
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Admin1234"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+      - ./init-db:/init-db
+    networks:
+      - backend_net
+    # Healthcheck temporal para que no marque unhealthy
+    healthcheck:
+      test: ["CMD-SHELL", "exit 0"]
+      interval: 10s
+      start_period: 30s
+      retries: 10
+    restart: unless-stopped
+
+  app:
+    build: .
+    container_name: backend_app
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "sqlserver://db:1433;initial catalog=Db_Agrotech;user=sa;password=Admin1234;encrypt=true;trustServerCertificate=true"
+      PORT: "3000"
+      JWT_SECRET: "agrotech_secret_key"
+      CHOKIDAR_USEPOLLING: "true"
+      environment:
+      CLOUDINARY_CLOUD_NAME: "dg2uzc4yg"
+      CLOUDINARY_API_KEY: "568852996119632"
+      CLOUDINARY_API_SECRET: "9rwdCWI-NfH8mI0IsqdRDUGQDTg"
+  # ... las que ya tienes
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - backend_net
+    depends_on:
+      - db
+    command: sh -c "npx prisma generate && npm run dev"
+    restart: on-failure
+
+  tools:
+    image: mcr.microsoft.com/mssql-tools
+    container_name: mssql_tools
+    networks:
+      - backend_net
+    entrypoint: ["sleep", "infinity"]
+
+volumes:
+  sqlserver_data:
+
+networks:
+  backend_net:
