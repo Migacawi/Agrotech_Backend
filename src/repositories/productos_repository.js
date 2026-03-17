@@ -2,12 +2,12 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const getAllProductos = async () => prisma.productos.findMany({
-    include: { Usuarios: true, DetallePedido: true, ImagenesProducto: true }
+  include: { Usuario: true, Detalles: true, Imagenes: true }
 });
 
 const getProductoById = async (id) => prisma.productos.findUnique({
-    where: { Id: id },
-    include: { Usuarios: true, DetallePedido: true, ImagenesProducto: true }
+  where: { Id: id },
+  include: { Usuario: true, Detalles: true, Imagenes: true }
 });
 
 const createProducto = async (data) => prisma.productos.create({ data });
