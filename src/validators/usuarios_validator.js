@@ -4,7 +4,7 @@ const createUsuarioSchema = z.object({
   Nombre: z
     .string({ required_error: 'El nombre es obligatorio' })
     .min(7, 'El nombre debe tener al menos 7 caracteres')
-    .max(13, 'El nombre no puede tener más de 13 caracteres'),
+    .max(30, 'El nombre es muy largo'),
   Email: z
     .string({ required_error: 'El email es obligatorio' })
     .email('Debe ser un email válido')
@@ -24,7 +24,7 @@ const updateUsuarioSchema = z.object({
   Nombre: z
     .string()
     .min(7, 'El nombre debe tener al menos 7 caracteres')
-    .max(13, 'El nombre no puede tener más de 13 caracteres')
+    .max(30, 'El nombre no puede tener más de 30 caracteres')
     .optional(),
   Email: z
     .string()
@@ -38,7 +38,10 @@ const updateUsuarioSchema = z.object({
     .optional(),
   RolId: z.coerce.number().int().positive('RolId debe ser un número entero positivo').optional(),
   RolNombre: z.string().min(1, 'RolNombre no puede estar vacío').optional()
-});
+}).refine(
+  (data) => Object.keys(data).length > 0,
+  { message: 'Debes proporcionar al menos un campo para actualizar', path: ['Nombre'] }
+);
 
 function validateCreateUsuario(data) {
   return createUsuarioSchema.safeParse(data);

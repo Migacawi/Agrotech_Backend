@@ -93,7 +93,7 @@ const loginUsuario = async (req, res) => {
             });
         }
 
-        if (usuario.passwordHash !== password) {
+        if (usuario.PasswordHash !== password) {
             return res.status(401).json({
                 error: "Contraseña incorrecta"
             });
@@ -101,9 +101,9 @@ const loginUsuario = async (req, res) => {
 
         const token = jwt.sign(
             {
-                id: usuario.id,
-                email: usuario.email,
-                rol: usuario.rol_id
+                id: usuario.Id,
+                email: usuario.Email,
+                rol: usuario.RolId
             },
             process.env.JWT_SECRET,
             { expiresIn: "8h" }

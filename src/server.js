@@ -25,8 +25,8 @@ app.use(cors({
 }));
 
 // Middleware para JSON con límite aumentado
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Rutas de la API
 app.use('/api/auth', authRoutes);
@@ -40,7 +40,7 @@ app.use('/api/imagenesproducto', imagenesProductoRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
-  res.send('Agrotech Backend funcionando 🚀');
+  res.send('Agrotech Backend funcionando');
 });
 
 // Middleware de manejo de errores
