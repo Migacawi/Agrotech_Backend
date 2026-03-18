@@ -19,7 +19,7 @@ const imagenesProductoRoutes = require('./routes/imagenesProducto_routes');
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://improved-space-doodle-r4v5r6vq6rr4f5wv-5173.app.github.dev'
+    'https://musical-lamp-7v9wrgxr99g42r5p5-5173.app.github.dev'
   ],
   credentials: true
 }));

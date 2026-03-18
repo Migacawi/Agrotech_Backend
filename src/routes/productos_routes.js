@@ -26,6 +26,7 @@ router.get('/:id', productosController.getProductoById);
 router.post(
   '/',
   authMiddleware,
+  roleMiddleware(['administrador', 'vendedor']),
   productosController.createProducto
 );
 
