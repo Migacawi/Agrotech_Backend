@@ -33,7 +33,11 @@ router.post(
 router.put(
   '/:id',
   authMiddleware,
-  ownerMiddleware,
+  (req, res, next) => {
+    const rol = req.user?.rol?.toLowerCase();
+    if (rol === 'administrador') return next();
+    ownerMiddleware(req, res, next);
+  },
   productosController.updateProducto
 );
 
@@ -41,8 +45,7 @@ router.put(
 router.delete(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware(['administrador']),
   productosController.deleteProducto
 );
-
 module.exports = router;
