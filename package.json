@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon",
+    "seed": "node src/seed.js",
     "prisma:generate": "npx prisma generate"
   },
   "dependencies": {

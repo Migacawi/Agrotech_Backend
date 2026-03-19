@@ -42,7 +42,7 @@ services:
       - backend_net
     depends_on:
       - db
-    command: sh -c "npx prisma generate && npm run dev"
+    command: sh -c "npx prisma generate && node src/seed.js && npm run dev"
     restart: on-failure
 
   tools:
