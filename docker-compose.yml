@@ -34,7 +34,7 @@ services:
       CLOUDINARY_CLOUD_NAME: "dg2uzc4yg"
       CLOUDINARY_API_KEY: "568852996119632"
       CLOUDINARY_API_SECRET: "9rwdCWI-NfH8mI0IsqdRDUGQDTg"
-  # ... las que ya tienes
+    # ... las que ya tienes
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -42,7 +42,7 @@ services:
       - backend_net
     depends_on:
       - db
-    command: sh -c "npx prisma generate && node src/seed.js && npm run dev"
+    command: sh -c "npx prisma generate && npx prisma db push && node src/seed.js && npm run dev"
     restart: on-failure
 
   tools:
