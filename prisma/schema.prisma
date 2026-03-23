@@ -79,6 +79,7 @@ model Usuarios {
   Email         String      @unique(map: "UQ__Usuarios__A9D105348273CCB6") @db.VarChar(100)
   PasswordHash  String      @db.VarChar(255)
   RolId         Int
+  FotoUrl       String?     @db.VarChar(500)
   FechaRegistro DateTime?   @default(now(), map: "DF__Usuarios__FechaR__3B75D760") @db.DateTime
 
   Pedidos       Pedidos[]
