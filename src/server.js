@@ -19,7 +19,7 @@ const imagenesProductoRoutes = require('./routes/imagenesProducto_routes');
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://musical-lamp-7v9wrgxr99g42r5p5-5173.app.github.dev'
+    'https://ubiquitous-guide-g4wv57446gv6c9gg9-5173.app.github.dev'
   ],
   credentials: true
 }));
