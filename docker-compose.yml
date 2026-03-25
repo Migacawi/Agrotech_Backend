@@ -12,7 +12,6 @@ services:
       - ./init-db:/init-db
     networks:
       - backend_net
-    # Healthcheck temporal para que no marque unhealthy
     healthcheck:
       test: ["CMD-SHELL", "exit 0"]
       interval: 10s
@@ -30,11 +29,10 @@ services:
       PORT: "3000"
       JWT_SECRET: "agrotech_secret_key"
       CHOKIDAR_USEPOLLING: "true"
-      environment:
       CLOUDINARY_CLOUD_NAME: "dg2uzc4yg"
       CLOUDINARY_API_KEY: "568852996119632"
       CLOUDINARY_API_SECRET: "9rwdCWI-NfH8mI0IsqdRDUGQDTg"
-    # ... las que ya tienes
+      GOOGLE_CLIENT_ID: "394053838870-f22602veuj3fiqak2i3h0f8a0s3659m7.apps.googleusercontent.com"
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
