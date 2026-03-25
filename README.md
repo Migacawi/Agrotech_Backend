@@ -8,4 +8,5 @@ https://res.cloudinary.com/dg2uzc4yg/image/upload/v1773696622/agrotech/productos
 create database Db_Agrotech
 go
 docker  exec -it backend_app bash
+npx prisma migrate resolve --applied "20250304000000_init"
 npx prisma migrate deploy
