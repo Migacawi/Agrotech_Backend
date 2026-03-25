@@ -57,6 +57,7 @@ model Productos {
   Descripcion      String?            @db.Text
   Categoria        String             @db.VarChar(50)
   PrecioPorLibra   Decimal            @db.Decimal(10, 2)
+  PrecioOriginal   Decimal?           @db.Decimal(10, 2)
   StockLibras      Decimal            @db.Decimal(10, 2)
   VendedorId       Int
   FechaPublicacion DateTime?          @default(now(), map: "DF__Productos__Fecha__3F466844") @db.DateTime
