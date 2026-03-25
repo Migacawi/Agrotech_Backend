@@ -19,7 +19,7 @@ const imagenesProductoRoutes = require('./routes/imagenesProducto_routes');
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://symmetrical-space-trout-v6vwgx5gvq6qfpq99-5173.app.github.dev'
+    'https://solid-spork-x5qg9v5549g9fp756-5173.app.github.dev'
   ],
   credentials: true
 }));
