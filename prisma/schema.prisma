@@ -14,7 +14,6 @@ model DetallePedido {
   CantidadLibras Decimal    @db.Decimal(10, 2)
   PrecioUnitario Decimal    @db.Decimal(10, 2)
   Subtotal       Decimal    @db.Decimal(12, 2)
-
   Pedido         Pedidos    @relation(fields: [PedidoId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Detalle_Pedido")
   Producto       Productos  @relation(fields: [ProductoId], references: [Id], onUpdate: NoAction, map: "FK_Detalle_Producto")
 }
@@ -25,7 +24,6 @@ model ImagenesProducto {
   UrlImagen   String     @db.VarChar(500)
   EsPrincipal Boolean?   @default(false, map: "DF__ImagenesP__EsPri__4316F928")
   FechaSubida DateTime?  @default(now(), map: "DF__ImagenesP__Fecha__440B1D61") @db.DateTime
-
   Producto    Productos  @relation(fields: [ProductoId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Imagenes_Productos")
 }
 
@@ -35,7 +33,6 @@ model Pagos {
   MetodoPago String    @db.VarChar(50)
   Estado     String    @db.VarChar(50)
   FechaPago  DateTime? @db.DateTime
-
   Pedido     Pedidos   @relation(fields: [PedidoId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Pagos_Pedidos")
 }
 
@@ -45,7 +42,6 @@ model Pedidos {
   FechaPedido   DateTime?        @default(now(), map: "DF__Pedidos__FechaPe__47DBAE45") @db.DateTime
   Estado        String?          @default("Pendiente", map: "DF__Pedidos__Estado__48CFD27E") @db.VarChar(50)
   Total         Decimal          @db.Decimal(12, 2)
-
   Detalles      DetallePedido[]
   Pago          Pagos?
   Usuario       Usuarios         @relation(fields: [CompradorId], references: [Id], onUpdate: NoAction, map: "FK_Pedidos_Usuarios")
@@ -61,7 +57,6 @@ model Productos {
   StockLibras      Decimal            @db.Decimal(10, 2)
   VendedorId       Int
   FechaPublicacion DateTime?          @default(now(), map: "DF__Productos__Fecha__3F466844") @db.DateTime
-
   Detalles         DetallePedido[]
   Imagenes         ImagenesProducto[]
   Usuario          Usuarios           @relation(fields: [VendedorId], references: [Id], onUpdate: NoAction, map: "FK_Productos_Usuarios")
@@ -70,7 +65,6 @@ model Productos {
 model Roles {
   Id       Int        @id(map: "PK__Roles__3214EC07758F4AD1") @default(autoincrement())
   Nombre   String     @unique(map: "UQ__Roles__75E3EFCF176E5DCF") @db.VarChar(50)
-
   Usuarios Usuarios[]
 }
 
@@ -82,10 +76,20 @@ model Usuarios {
   RolId         Int
   FotoUrl       String?     @db.VarChar(500)
   FechaRegistro DateTime?   @default(now(), map: "DF__Usuarios__FechaR__3B75D760") @db.DateTime
-
   Pedidos       Pedidos[]
   Productos     Productos[]
   Rol           Roles       @relation(fields: [RolId], references: [Id], onUpdate: NoAction, map: "FK_Usuarios_Roles")
+  CodigosRecuperacion CodigoRecuperacion[]
+}
+
+// ── NUEVA TABLA ──────────────────────────────────────────────────────────────
+model CodigoRecuperacion {
+  Id        Int      @id @default(autoincrement())
+  UsuarioId Int
+  Codigo    String   @db.VarChar(6)
+  Expira    DateTime @db.DateTime
+  Usado     Boolean  @default(false)
+  Usuario   Usuarios @relation(fields: [UsuarioId], references: [Id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model Sysdiagrams {
@@ -94,6 +98,5 @@ model Sysdiagrams {
   diagram_id   Int    @id(map: "PK__sysdiagr__C2B05B61631EF481") @default(autoincrement())
   version      Int?
   definition   Bytes?
-
   @@unique([principal_id, name], map: "UK_principal_name")
 }
