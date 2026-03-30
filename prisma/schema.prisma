@@ -64,15 +64,15 @@ model Productos {
 
 model Roles {
   Id       Int        @id(map: "PK__Roles__3214EC07758F4AD1") @default(autoincrement())
-  Nombre   String     @unique(map: "UQ__Roles__75E3EFCF176E5DCF") @db.VarChar(50)
+  Nombre   String     @unique(map: "UQ__Roles__75E3EFCF176E5DCF") @db.NVarChar(50)
   Usuarios Usuarios[]
 }
 
 model Usuarios {
   Id            Int         @id(map: "PK__Usuarios__3214EC0755505276") @default(autoincrement())
-  Nombre        String      @db.VarChar(100)
-  Email         String      @unique(map: "UQ__Usuarios__A9D105348273CCB6") @db.VarChar(100)
-  PasswordHash  String      @db.VarChar(255)
+  Nombre        String      @db.NVarChar(100)
+  Email         String      @unique(map: "UQ__Usuarios__A9D105348273CCB6") @db.NVarChar(100)
+  PasswordHash  String      @db.NVarChar(255)
   RolId         Int
   FotoUrl       String?     @db.VarChar(500)
   FechaRegistro DateTime?   @default(now(), map: "DF__Usuarios__FechaR__3B75D760") @db.DateTime
