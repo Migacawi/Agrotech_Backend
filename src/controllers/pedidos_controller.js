@@ -1,4 +1,6 @@
 const pedidosService = require('../services/pedidos_service');
+const prisma = require('../prisma/client');
+const { enviarConfirmacionPedido, enviarCambioEstado } = require('../utils/mailer');
 
 const getPedidos = async (req, res) => {
   try {
@@ -37,6 +39,11 @@ const createPedido = async (req, res) => {
       detalles,
     });
 
+    // Email de confirmación — fire and forget
+    prisma.usuarios.findUnique({ where: { Id: CompradorId } })
+      .then(u => { if (u) enviarConfirmacionPedido(u.Email, u.Nombre, pedido).catch(() => {}); })
+      .catch(() => {});
+
     res.status(201).json(pedido);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -45,7 +52,19 @@ const createPedido = async (req, res) => {
 
 const updatePedido = async (req, res) => {
   try {
+    const pedidoAntes = await pedidosService.getPedido(parseInt(req.params.id));
     const pedido = await pedidosService.editPedido(parseInt(req.params.id), req.body);
+
+    // Si cambió el estado, notificar al comprador — fire and forget
+    if (req.body.Estado && req.body.Estado !== pedidoAntes?.Estado) {
+      const compradorId = pedidoAntes?.CompradorId || pedidoAntes?.Usuario?.Id;
+      if (compradorId) {
+        prisma.usuarios.findUnique({ where: { Id: compradorId } })
+          .then(u => { if (u) enviarCambioEstado(u.Email, u.Nombre, pedido.Id, req.body.Estado).catch(() => {}); })
+          .catch(() => {});
+      }
+    }
+
     res.json(pedido);
   } catch (err) {
     res.status(500).json({ error: err.message });

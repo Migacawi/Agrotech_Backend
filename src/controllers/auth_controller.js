@@ -1,4 +1,5 @@
 const jwt     = require("jsonwebtoken");
+const bcrypt  = require("bcrypt");
 const prisma  = require("../prisma/client");
 const { OAuth2Client }            = require("google-auth-library");
 const { enviarCodigoRecuperacion } = require("../utils/mailer");
@@ -20,7 +21,8 @@ const login = async (req, res) => {
     if (!user)
       return res.status(401).json({ message: "Usuario no encontrado" });
 
-    if (user.PasswordHash !== password)
+    const passwordValida = await bcrypt.compare(password, user.PasswordHash);
+    if (!passwordValida)
       return res.status(401).json({ message: "Contraseña incorrecta" });
 
     const token = jwt.sign(
@@ -183,10 +185,11 @@ const cambiarPassword = async (req, res) => {
       data:  { Usado: true },
     });
 
-    // Actualizar contraseña
+    // Hashear y actualizar contraseña
+    const hash = await bcrypt.hash(nuevaPassword, 10);
     await prisma.usuarios.update({
       where: { Id: user.Id },
-      data:  { PasswordHash: nuevaPassword },
+      data:  { PasswordHash: hash },
     });
 
     res.json({ message: "Contraseña actualizada correctamente" });

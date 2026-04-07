@@ -11,8 +11,11 @@ const createUsuarioSchema = z.object({
     .max(100, 'El email es demasiado largo'),
   PasswordHash: z
     .string({ required_error: 'La contraseña es obligatoria' })
-    .min(6, 'La contraseña debe tener al menos 6 caracteres')
-    .max(255, 'La contraseña es demasiado larga'),
+    .min(8, 'La contraseña debe tener al menos 8 caracteres')
+    .max(255, 'La contraseña es demasiado larga')
+    .regex(/[A-Z]/, 'La contraseña debe contener al menos una letra mayúscula')
+    .regex(/[0-9]/, 'La contraseña debe contener al menos un número')
+    .regex(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, 'La contraseña debe contener al menos un carácter especial'),
   RolId: z.coerce.number().int().positive('RolId debe ser un número entero positivo').optional(),
   RolNombre: z.string().min(1, 'RolNombre no puede estar vacío').optional()
 }).refine(
@@ -33,9 +36,13 @@ const updateUsuarioSchema = z.object({
     .optional(),
   PasswordHash: z
     .string()
-    .min(6, 'La contraseña debe tener al menos 6 caracteres')
+    .min(8, 'La contraseña debe tener al menos 8 caracteres')
     .max(255, 'La contraseña es demasiado larga')
+    .regex(/[A-Z]/, 'La contraseña debe contener al menos una letra mayúscula')
+    .regex(/[0-9]/, 'La contraseña debe contener al menos un número')
+    .regex(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/, 'La contraseña debe contener al menos un carácter especial')
     .optional(),
+  PasswordActual: z.string().optional(),
   RolId: z.coerce.number().int().positive('RolId debe ser un número entero positivo').optional(),
   RolNombre: z.string().min(1, 'RolNombre no puede estar vacío').optional()
 }).refine(

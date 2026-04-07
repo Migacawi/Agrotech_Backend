@@ -1,4 +1,5 @@
 const prisma = require('./prisma/client');
+const bcrypt = require('bcrypt');
 
 async function seed() {
 
@@ -16,19 +17,20 @@ async function seed() {
 
   // ── Administradores ────────────────────────────────────────────────────
   const admins = [
-    { Nombre: 'Nicolas Acosta',    Email: 'niko.Admin@agrotech.com',   PasswordHash: 'Admin1234' },
-    { Nombre: 'Gabriel Castellanos', Email: 'Gabi.Admin@agrotech.com', PasswordHash: 'Admin1234' },
-    { Nombre: 'Andres Felipe',     Email: 'andres.Admin@agrotech.com', PasswordHash: 'Admin1234' },
+    { Nombre: 'Nicolas Acosta',      Email: 'niko.Admin@agrotech.com',   PasswordHash: 'Admin1234!' },
+    { Nombre: 'Gabriel Castellanos', Email: 'Gabi.Admin@agrotech.com',   PasswordHash: 'Admin1234!' },
+    { Nombre: 'Andres Felipe',       Email: 'andres.Admin@agrotech.com', PasswordHash: 'Admin1234!' },
   ];
 
   for (const admin of admins) {
+    const hash = await bcrypt.hash(admin.PasswordHash, 10);
     await prisma.usuarios.upsert({
       where:  { Email: admin.Email },
-      update: {},
+      update: { PasswordHash: hash },
       create: {
         Nombre:       admin.Nombre,
         Email:        admin.Email,
-        PasswordHash: admin.PasswordHash,
+        PasswordHash: hash,
         Rol:          { connect: { Nombre: 'Administrador' } },
       },
     });

@@ -48,8 +48,9 @@ const getProductoById = async (req, res) => {
                     Descripcion:    Descripcion || "",
                     Categoria:      Categoria,
                     PrecioPorLibra: parseFloat(PrecioPorLibra),
-                    PrecioOriginal: parseFloat(PrecioPorLibra), // ← agrega el precio original
+                    PrecioOriginal: parseFloat(PrecioPorLibra),
                     StockLibras:    parseFloat(StockLibras),
+                    FechaCosecha:   new Date(fechaCosecha),
                     VendedorId:     req.user.id,
                 };
 

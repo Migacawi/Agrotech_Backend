@@ -1,4 +1,5 @@
 const usuariosService = require("../services/usuarios_service");
+const bcrypt = require("bcrypt");
 const {
   validateCreateUsuario,
   validateUpdateUsuario,
@@ -6,6 +7,7 @@ const {
 const jwt = require("jsonwebtoken");
 const { cloudinary } = require("../middlewares/uploadMiddleware");
 const prisma = require("../prisma/client");
+const { enviarBienvenida } = require("../utils/mailer");
 
 function mapErrorToResponse(err) {
   if (err.code === "P2002") {
@@ -53,7 +55,15 @@ const createUsuario = async (req, res) => {
         .status(400)
         .json({ error: "Datos inválidos", detalles: messages });
     }
-    const usuario = await usuariosService.addUsuario(result.data);
+
+    const data = { ...result.data };
+    data.PasswordHash = await bcrypt.hash(data.PasswordHash, 10);
+
+    const usuario = await usuariosService.addUsuario(data);
+
+    // Email de bienvenida — fire and forget (no bloquea la respuesta)
+    enviarBienvenida(usuario.Email, usuario.Nombre).catch(() => {});
+
     res.status(201).json(usuario);
   } catch (err) {
     const { status, message } = mapErrorToResponse(err);
@@ -70,9 +80,30 @@ const updateUsuario = async (req, res) => {
         .status(400)
         .json({ error: "Datos inválidos", detalles: messages });
     }
+
+    const data = { ...result.data };
+
+    // Si viene nueva contraseña, verificar la actual primero
+    if (data.PasswordHash) {
+      if (!data.PasswordActual) {
+        return res.status(400).json({ error: "Debes enviar la contraseña actual para cambiarla." });
+      }
+      // Obtener el usuario actual para comparar
+      const usuarioActual = await prisma.usuarios.findUnique({
+        where: { Id: parseInt(req.params.id) },
+      });
+      const coincide = await bcrypt.compare(data.PasswordActual, usuarioActual.PasswordHash);
+      if (!coincide) {
+        return res.status(401).json({ error: "La contraseña actual es incorrecta." });
+      }
+      data.PasswordHash = await bcrypt.hash(data.PasswordHash, 10);
+    }
+    // Quitar PasswordActual del payload antes de actualizar
+    delete data.PasswordActual;
+
     const usuario = await usuariosService.editUsuario(
       parseInt(req.params.id),
-      result.data,
+      data,
     );
     res.json(usuario);
   } catch (err) {
@@ -101,8 +132,11 @@ const loginUsuario = async (req, res) => {
       return res.status(401).json({ error: "Usuario no encontrado" });
     }
 
-    if (usuario.PasswordHash !== password) {
-      return res.status(401).json({ error: "Contraseña incorrecta" });
+    if (usuario.PasswordHash !== "GOOGLE_AUTH") {
+      const passwordValida = await bcrypt.compare(password, usuario.PasswordHash);
+      if (!passwordValida) {
+        return res.status(401).json({ error: "Contraseña incorrecta" });
+      }
     }
 
     const token = jwt.sign(
