@@ -1,5 +1,12 @@
 const nodemailer = require('nodemailer');
 
+/** True si hay credenciales para enviar correo (evita 500 opacos en recuperar contraseña). */
+const correoEstaConfigurado = () =>
+  Boolean(
+    String(process.env.GMAIL_USER || '').trim() &&
+      String(process.env.GMAIL_PASS || '').trim()
+  );
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -125,6 +132,7 @@ const enviarCambioEstado = async (email, nombre, pedidoId, nuevoEstado) => {
 };
 
 module.exports = {
+  correoEstaConfigurado,
   enviarCodigoRecuperacion,
   enviarBienvenida,
   enviarConfirmacionPedido,

@@ -2,7 +2,10 @@ const jwt     = require("jsonwebtoken");
 const bcrypt  = require("bcrypt");
 const prisma  = require("../prisma/client");
 const { OAuth2Client }            = require("google-auth-library");
-const { enviarCodigoRecuperacion } = require("../utils/mailer");
+const {
+  enviarCodigoRecuperacion,
+  correoEstaConfigurado,
+} = require("../utils/mailer");
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -100,6 +103,15 @@ const solicitarCodigo = async (req, res) => {
     if (!user)
       return res.status(404).json({ message: "No existe una cuenta con ese correo" });
 
+    if (!correoEstaConfigurado()) {
+      console.error("SOLICITAR CÓDIGO: falta GMAIL_USER o GMAIL_PASS en .env");
+      return res.status(503).json({
+        message: "El servidor no puede enviar correos todavía.",
+        detalle:
+          "En Agrotech_Backend/.env configura GMAIL_USER y GMAIL_PASS (contraseña de aplicación de Google, no la contraseña normal de la cuenta).",
+      });
+    }
+
     // Generar código de 6 dígitos
     const codigo = Math.floor(100000 + Math.random() * 900000).toString();
     const expira = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
@@ -110,17 +122,38 @@ const solicitarCodigo = async (req, res) => {
       data:  { Usado: true },
     });
 
-    // Guardar nuevo código
-    await prisma.codigoRecuperacion.create({
-      data: { UsuarioId: user.Id, Codigo: codigo, Expira: expira },
-    });
-
-    await enviarCodigoRecuperacion(email, codigo);
+    let registro = null;
+    try {
+      registro = await prisma.codigoRecuperacion.create({
+        data: { UsuarioId: user.Id, Codigo: codigo, Expira: expira },
+      });
+      await enviarCodigoRecuperacion(email, codigo);
+    } catch (mailOrDbErr) {
+      if (registro?.Id) {
+        try {
+          await prisma.codigoRecuperacion.delete({ where: { Id: registro.Id } });
+        } catch (_) {
+          /* ignore */
+        }
+      }
+      throw mailOrDbErr;
+    }
 
     res.json({ message: "Código enviado al correo" });
   } catch (error) {
     console.error("ERROR SOLICITAR CÓDIGO:", error);
-    res.status(500).json({ message: "Error al enviar el código", error: error.message });
+    const code = error.code || error.responseCode;
+    const msg = String(error.message || "");
+    const esAuthCorreo =
+      code === "EAUTH" ||
+      /Invalid login|authentication failed|535|534/i.test(msg);
+    const status = esAuthCorreo ? 502 : 500;
+    res.status(status).json({
+      message: esAuthCorreo
+        ? "Gmail rechazó el inicio de sesión del servidor. Revisa GMAIL_USER y GMAIL_PASS (usa una contraseña de aplicación)."
+        : "Error al enviar el código",
+      ...(process.env.NODE_ENV !== "production" && { error: error.message }),
+    });
   }
 };
 

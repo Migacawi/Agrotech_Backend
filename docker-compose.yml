@@ -32,7 +32,7 @@ services:
       CLOUDINARY_CLOUD_NAME: "dg2uzc4yg"
       CLOUDINARY_API_KEY: "568852996119632"
       CLOUDINARY_API_SECRET: "9rwdCWI-NfH8mI0IsqdRDUGQDTg"
-      GOOGLE_CLIENT_ID: "394053838870-f22602veuj3fiqak2i3h0f8a0s3659m7.apps.googleusercontent.com"
+      GOOGLE_CLIENT_ID: "510830090396-7pk9o8pmnb1aue6821q6lq8o8hjnbm9l.apps.googleusercontent.com"
       GMAIL_USER: "funw.uuna.bavt.uvhj@gmail.com"
       GMAIL_PASS: "funwuunabavtuvhj"   # Sin espacios
     volumes:
