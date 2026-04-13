@@ -13,7 +13,7 @@ const baseStyle = `font-family: 'Arial', sans-serif; max-width: 520px; margin: a
 const headerHtml = (titulo) => `
   <div style="${baseStyle}">
     <div style="background: #07393c; padding: 24px 32px; border-radius: 8px 8px 0 0; text-align: center;">
-      <h1 style="color: #fff; margin: 0; font-size: 22px; letter-spacing: 1px;">🌱 AgroTech</h1>
+      <h1 style="color: #fff; margin: 0; font-size: 22px; letter-spacing: 1px;">AgroTech</h1>
       <p style="color: #a8d5c2; margin: 6px 0 0; font-size: 14px;">${titulo}</p>
     </div>
     <div style="background: #fff; padding: 32px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px;">
@@ -31,7 +31,7 @@ const enviarCodigoRecuperacion = async (email, codigo) => {
   await transporter.sendMail({
     from: `"AgroTech" <${process.env.GMAIL_USER}>`,
     to: email,
-    subject: '🔐 Código de recuperación — AgroTech',
+    subject: 'Código de recuperación — AgroTech',
     html: `
       ${headerHtml('Recuperación de contraseña')}
         <p style="color: #333;">Usa el siguiente código para restablecer tu contraseña. Expira en <strong>15 minutos</strong>.</p>
@@ -48,15 +48,15 @@ const enviarBienvenida = async (email, nombre) => {
   await transporter.sendMail({
     from: `"AgroTech" <${process.env.GMAIL_USER}>`,
     to: email,
-    subject: '👋 ¡Bienvenido a AgroTech!',
+    subject: '¡Bienvenido a AgroTech!',
     html: `
       ${headerHtml('¡Tu cuenta fue creada exitosamente!')}
         <p style="color: #333; font-size: 15px;">Hola <strong>${nombre}</strong>,</p>
         <p style="color: #555;">Te damos la bienvenida a <strong>AgroTech</strong>, el marketplace agrícola colombiano. Ahora puedes:</p>
         <ul style="color: #555; line-height: 2;">
-          <li>🌿 Explorar y comprar productos frescos del campo</li>
-          <li>🛒 Gestionar tus pedidos desde tu perfil</li>
-          <li>📦 Publicar y vender tus propios productos</li>
+          <li>Explorar y comprar productos frescos del campo</li>
+          <li>Gestionar tus pedidos desde tu perfil</li>
+          <li>Publicar y vender tus propios productos</li>
         </ul>
         <div style="text-align: center; margin-top: 24px;">
           <a href="http://localhost:5173" style="background: #07393c; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px;">Ir a la tienda →</a>
@@ -79,7 +79,7 @@ const enviarConfirmacionPedido = async (email, nombre, pedido) => {
   await transporter.sendMail({
     from: `"AgroTech" <${process.env.GMAIL_USER}>`,
     to: email,
-    subject: `✅ Pedido #${pedido.Id} confirmado — AgroTech`,
+    subject: `Pedido #${pedido.Id} confirmado — AgroTech`,
     html: `
       ${headerHtml(`Pedido #${pedido.Id} recibido`)}
         <p style="color: #333;">Hola <strong>${nombre}</strong>, tu pedido fue recibido correctamente.</p>
@@ -104,22 +104,19 @@ const enviarConfirmacionPedido = async (email, nombre, pedido) => {
 
 // ── 4. Cambio de estado del pedido ────────────────────────────────────────────
 const enviarCambioEstado = async (email, nombre, pedidoId, nuevoEstado) => {
-  const emojis = { Pendiente: '⏳', Enviado: '🚚', Entregado: '✅', Cancelado: '❌', Pagado: '💳' };
   const colores = { Pendiente: '#856404', Enviado: '#004085', Entregado: '#155724', Cancelado: '#721c24', Pagado: '#155724' };
-  const emoji  = emojis[nuevoEstado]  || '📦';
   const color  = colores[nuevoEstado] || '#07393c';
 
   await transporter.sendMail({
     from: `"AgroTech" <${process.env.GMAIL_USER}>`,
     to: email,
-    subject: `${emoji} Pedido #${pedidoId} actualizado — AgroTech`,
+    subject: `Pedido #${pedidoId} actualizado: ${nuevoEstado} — AgroTech`,
     html: `
       ${headerHtml(`Actualización de tu pedido`)}
         <p style="color: #333;">Hola <strong>${nombre}</strong>,</p>
         <p style="color: #555;">El estado de tu pedido <strong>#${pedidoId}</strong> ha cambiado a:</p>
         <div style="background: #f5fafa; border-left: 4px solid ${color}; padding: 16px 20px; border-radius: 4px; margin: 16px 0;">
-          <span style="font-size: 28px;">${emoji}</span>
-          <span style="font-size: 20px; font-weight: bold; color: ${color}; margin-left: 12px;">${nuevoEstado}</span>
+          <span style="font-size: 20px; font-weight: bold; color: ${color};">${nuevoEstado}</span>
         </div>
         <p style="color: #888; font-size: 13px;">Revisa los detalles en tu historial de compras.</p>
       ${footerHtml}
@@ -132,4 +129,4 @@ module.exports = {
   enviarBienvenida,
   enviarConfirmacionPedido,
   enviarCambioEstado,
-};
+};

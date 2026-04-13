@@ -34,7 +34,7 @@ services:
       CLOUDINARY_API_SECRET: "9rwdCWI-NfH8mI0IsqdRDUGQDTg"
       GOOGLE_CLIENT_ID: "394053838870-f22602veuj3fiqak2i3h0f8a0s3659m7.apps.googleusercontent.com"
       GMAIL_USER: "funw.uuna.bavt.uvhj@gmail.com"
-      GMAIL_PASS: "funwuunabavtuvhj"   # ✅ Sin espacios
+      GMAIL_PASS: "funwuunabavtuvhj"   # Sin espacios
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules

@@ -64,7 +64,7 @@ const removeUsuario = (id) => prisma.usuarios.delete({
   where: { Id: id }
 });
 
-// 🔐 FUNCIÓN PARA LOGIN
+// FUNCIÓN PARA LOGIN
 const getUsuarioByEmail = (email) => prisma.usuarios.findUnique({
   where: { Email: email },
   include: { Rol: true }

@@ -12,7 +12,7 @@ async function seed() {
       update: {},
       create: { Nombre: nombre },
     });
-    console.log(`Rol "${nombre}" verificado ✔`);
+    console.log(`Rol "${nombre}" verificado`);
   }
 
   // ── Administradores ────────────────────────────────────────────────────
@@ -34,10 +34,10 @@ async function seed() {
         Rol:          { connect: { Nombre: 'Administrador' } },
       },
     });
-    console.log(`Admin "${admin.Nombre}" verificado ✔`);
+    console.log(`Admin "${admin.Nombre}" verificado`);
   }
 
-  console.log('✅ Seed completado');
+  console.log('Seed completado');
   await prisma.$disconnect();
 }
 

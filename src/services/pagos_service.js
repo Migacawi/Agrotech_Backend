@@ -49,10 +49,10 @@ const procesarPago = async (pedidoId, metodoPago) => {
   return {
     pago,
     mensaje: estadoPago === 'Aprobado'
-      ? '✅ Pago aprobado, pedido confirmado'
+      ? 'Pago aprobado, pedido confirmado'
       : estadoPago === 'Pendiente'
       ? '⏳ Pago en efectivo pendiente de confirmación'
-      : '❌ Pago rechazado, intente con otro método'
+      : 'Pago rechazado, intente con otro método'
   };
 };
 
@@ -70,7 +70,7 @@ const confirmarEfectivo = async (pagoId) => {
     data:  { Estado: 'Pagado' }
   });
 
-  return { pago: pagoActualizado, mensaje: '✅ Pago en efectivo confirmado' };
+  return { pago: pagoActualizado, mensaje: 'Pago en efectivo confirmado' };
 };
 
 const editPago = async (id, data) => pagosRepo.updatePago(id, data);
