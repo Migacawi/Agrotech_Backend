@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 3000
 
 # Comando por defecto: prisma generate + iniciar server
-CMD ["sh", "-c", "npx prisma generate && node src/server.js"]
+CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && node src/server.js"]
