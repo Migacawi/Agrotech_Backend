@@ -15,10 +15,15 @@ const pagosRoutes = require("./routes/pagos_routes");
 const rolesRoutes = require("./routes/roles_routes");
 const imagenesProductoRoutes = require("./routes/imagenesProducto_routes");
 
-// Configuración de CORS
+// Configuración de CORS corregida para incluir Render y Localhost
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+    origin: [
+      "http://localhost:5173", 
+      "http://127.0.0.1:5173",
+      "https://agrotech-proyectov2.onrender.com" // URL de tu frontend en producción
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   }),
 );
