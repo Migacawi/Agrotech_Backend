@@ -93,7 +93,18 @@ const createPedido = async (req, res) => {
 
     res.status(201).json(pedido);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error en createPedido:", err);
+
+    // Errores específicos
+    if (err.message.includes("Producto no encontrado")) {
+      return res.status(404).json({ message: err.message });
+    }
+    if (err.message.includes("stock")) {
+      return res.status(409).json({ message: err.message });
+    }
+
+    // Error genérico
+    res.status(500).json({ error: err.message || "Error al crear pedido" });
   }
 };
 
